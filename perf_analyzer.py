@@ -22,6 +22,7 @@ def main():
 
     csvs = []
     csvFiles = []
+    too_small_size = 1024
 
     if args.csvDir:
         csvFiles = [f for f in os.listdir(args.csvDir) if f.endswith('.csv')]
@@ -29,7 +30,9 @@ def main():
             print('No csv files found in the directory')
             return
         for f in csvFiles:
-            csvs.append(pd.read_csv(os.path.join(args.csvDir, f), on_bad_lines='skip'))
+            # check if file is not empty
+            if os.path.getsize(os.path.join(args.csvDir, f)) > too_small_size:
+                csvs.append(pd.read_csv(os.path.join(args.csvDir, f), on_bad_lines='skip'))
     elif args.csv:
         # only append the file name
         csvFiles = [args.csv.split('/')[-1].split('\\')[-1]]
