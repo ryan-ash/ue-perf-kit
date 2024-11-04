@@ -12,14 +12,14 @@ import pandas as pd
 import numpy as np
 
 def main():
-    print('Generating summary report from csv files...')
-
     parser = argparse.ArgumentParser(description='Generate summary report from csv files')
     parser.add_argument('-csvDir', type=str, help='path to csv files')
     parser.add_argument('-csv', type=str, help='path to csv file')
     parser.add_argument('-outputFile', type=str, help='output file name')
-    parser.add_argument('-name', type=str, help='name of the test')
+    parser.add_argument('-name', type=str, help='name of the test', default='')
     args = parser.parse_args()
+
+    print(f'[{args.name}] Generating summary report from csv files...')
 
     csvs = []
     csvFiles = []
@@ -28,7 +28,7 @@ def main():
     if args.csvDir:
         csvFiles = [f for f in os.listdir(args.csvDir) if f.endswith('.csv')]
         if len(csvFiles) == 0:
-            print('No csv files found in the directory')
+            print(f'[{args.name}] No csv files found in the directory')
             return
         for f in csvFiles:
             # check if file is not empty
@@ -39,7 +39,7 @@ def main():
         csvFiles = [args.csv.split('/')[-1].split('\\')[-1]]
         csvs.append(pd.read_csv(args.csv, on_bad_lines='skip'))
     else:
-        print('No csv file or directory provided')
+        print(f'[{args.name}] No csv file or directory provided')
         return
     
     summary = {
@@ -48,16 +48,18 @@ def main():
     }
 
     for i, df in enumerate(csvs):
-        print('Analyzing csv file: ', i)
+        print(f'[{args.name}] Analyzing csv file: ', i)
         summary['tests'].append(analyze_df(df, csvFiles[i]))
 
+    output = json.dumps(summary, indent=4)
+    print(f"[{args.name}] {output}")
+
     if args.outputFile:
-        print('Writing summary report to file: ' + args.outputFile + '...')
+        print(f'[{args.name}] Writing summary report to file: {args.outputFile}...')
         with open(args.outputFile, 'w') as f:
-            f.write(json.dumps(summary, indent=4))
+            f.write(output)
     else:
-        print("No output file provided, printing to console...")
-        print(summary)
+        print(f"[{args.name}] No output file provided, shutting down...")
 
 
 
@@ -80,14 +82,9 @@ def analyze_df(df, file_name=None):
     rt['min'] = float(df['RenderThreadTime'].min())
     rt['avg'] = float(df['RenderThreadTime'].mean())
 
-    print('GT: ', gt)
-    print('RT: ', rt)
-
     frame['max'] = float(df['FrameTime'].max())
     frame['min'] = float(df['FrameTime'].min())
     frame['avg'] = float(df['FrameTime'].mean())
-
-    print('Frame: ', frame)
 
     frame_times = df['FrameTime'].values
 
@@ -105,8 +102,6 @@ def analyze_df(df, file_name=None):
     fps_output['max'] = float(np.max(fps))
     fps_output['min'] = float(np.min(fps))
     fps_output['avg'] = float(np.mean(fps))
-
-    print('FPS: ', fps_output)
 
     result['GameThreadTime'] = gt
     result['RenderThreadTime'] = rt
