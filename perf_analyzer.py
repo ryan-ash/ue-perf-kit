@@ -44,7 +44,11 @@ def main():
 
     for i, df in enumerate(csvs):
         print('Analyzing csv file: ', i)
-        summary['tests'].append(analyze_df(df, csvFiles[i]))
+        try:
+            summary['tests'].append(analyze_df(df, csvFiles[i]))
+        except Exception as e:
+            print('Error analyzing csv file ' + i + ': ' + csvFiles[i])
+            print(e)
 
     if args.outputFile:
         print('Writing summary report to file: ' + args.outputFile + '...')
