@@ -18,6 +18,7 @@ def main():
     parser.add_argument('-csvDir', type=str, help='path to csv files')
     parser.add_argument('-csv', type=str, help='path to csv file')
     parser.add_argument('-outputFile', type=str, help='output file name')
+    parser.add_argument('-name', type=str, help='name of the test')
     args = parser.parse_args()
 
     csvs = []
@@ -42,6 +43,7 @@ def main():
         return
     
     summary = {
+        'name': args.name,
         'tests': []
     }
 
