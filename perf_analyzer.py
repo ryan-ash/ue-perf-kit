@@ -71,19 +71,19 @@ def analyze_df(df, file_name=None):
     frame = template.copy()
     fps_output = template.copy()
 
-    gt['max'] = df['GameThreadTime'].max()
-    gt['min'] = df['GameThreadTime'].min()
-    gt['avg'] = df['GameThreadTime'].mean()
-    rt['max'] = df['RenderThreadTime'].max()
-    rt['min'] = df['RenderThreadTime'].min()
-    rt['avg'] = df['RenderThreadTime'].mean()
+    gt['max'] = int(df['GameThreadTime'].max())
+    gt['min'] = int(df['GameThreadTime'].min())
+    gt['avg'] = int(df['GameThreadTime'].mean())
+    rt['max'] = int(df['RenderThreadTime'].max())
+    rt['min'] = int(df['RenderThreadTime'].min())
+    rt['avg'] = int(df['RenderThreadTime'].mean())
 
     print('GT: ', gt)
     print('RT: ', rt)
 
-    frame['max'] = df['FrameTime'].max()
-    frame['min'] = df['FrameTime'].min()
-    frame['avg'] = df['FrameTime'].mean()
+    frame['max'] = int(df['FrameTime'].max())
+    frame['min'] = int(df['FrameTime'].min())
+    frame['avg'] = int(df['FrameTime'].mean())
 
     print('Frame: ', frame)
 
